@@ -1,0 +1,27 @@
+#!/bin/bash
+
+function run() {
+  start_time=$(date +"%s")
+  cmd_output=$(eval $1)
+  return_value=$?
+  if [ $return_value != 0 ]; then
+    echo "Command $1 failed"
+    printf "%25s\n" | tr " " -
+    exit -1
+  else
+    echo "output: $cmd_output"
+    end_time=$(date +"%s")
+    echo "Command succeeded execution time was `expr $end_time - $start_time` s."
+    printf "%25s\n" | tr " " -
+  fi
+  return $return_value
+}
+
+run 'export ALLOW_MISSING_DEPENDENCIES=true'
+run '. build/envsetup.sh'
+run 'export BR_MAINTAINER="TRISF | @trisfaizal"'
+run 'lunch omni_vince-eng'
+run 'mka recoveryimage'
+
+
+
